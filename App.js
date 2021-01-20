@@ -18,7 +18,10 @@ const App = () => {
     const shuffleDeck = await fetch(getNewDeckString)
       .then((res) => (res.ok ? res.json() : new Error(res.error)))
       .then((data) => (data.success ? data : new Error(data.error)))
-      .catch((error) => console.log(error.message));
+      .catch((error) => {
+        console.log(error.message);
+        throw error;
+      });
 
     setDeckId(shuffleDeck.deck_id);
     setStartButtonShowState(false);
@@ -32,7 +35,10 @@ const App = () => {
       const shuffleDeck = await fetch(shuffleString)
         .then((res) => (res.ok ? res.json() : new Error(res.error)))
         .then((data) => (data.success ? data : new Error(data.error)))
-        .catch((error) => console.log(error.message));
+        .catch((error) => {
+          console.log('Encountered a problem:' + error.message);
+          throw error;
+        });
 
       alert('Deck Shuffled');
       setCardsRemaining(shuffleDeck.remaining);
@@ -42,8 +48,12 @@ const App = () => {
       .then((res) => res.json())
       .then((data) => (data.success ? data : new Error(data.error)))
       .catch((error) => console.log(error.message));
-    setCardsRemaining(cardData.remaining);
-    setCardImage(cardData.cards[0].image);
+    try {
+      setCardsRemaining(cardData.remaining);
+      setCardImage(cardData.cards[0].image);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
