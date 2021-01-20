@@ -1,14 +1,29 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import Header from './components/Header';
 import Card from './components/Card';
 import DrawCardButton from './components/DrawCardButton';
+import StartButton from './components/StartButton';
 
 const App = () => {
   const [deckId, setDeckId] = useState('nr2zoehl1tii');
   const [cardImage, setCardImage] = useState('');
   const [cardsRemaining, setCardsRemaining] = useState(0);
+  const [startButtonShowState, setStartButtonShowState] = useState(true);
+  const [drawButtonDisabledState, setDrawButtonDisabledState] = useState(true);
 
+  const onStartPress = async () => {
+    const getNewDeckString = `https://deckofcardsapi.com/api/deck/new/shuffle/`;
+
+    const shuffleDeck = await fetch(getNewDeckString)
+      .then((res) => (res.ok ? res.json() : new Error(res.error)))
+      .then((data) => (data.success ? data : new Error(data.error)))
+      .catch((error) => console.log(error.message));
+
+    setDeckId(shuffleDeck.deck_id);
+    setStartButtonShowState(false);
+    setDrawButtonDisabledState(false);
+  };
   const onPress = async () => {
     const getString = `https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=1`;
     const shuffleString = `https://deckofcardsapi.com/api/deck/${deckId}/shuffle/`;
@@ -18,8 +33,6 @@ const App = () => {
         .then((res) => (res.ok ? res.json() : new Error(res.error)))
         .then((data) => (data.success ? data : new Error(data.error)))
         .catch((error) => console.log(error.message));
-
-      alert('Deck shuffled!');
 
       setCardsRemaining(shuffleDeck.remaining);
     }
@@ -39,11 +52,17 @@ const App = () => {
         <Card card={cardImage} />
         <Text>{cardsRemaining}</Text>
       </View>
-      <View styles={styles.drawCardButtonContainer}>
+      <View style={styles.drawCardButtonContainer}>
         <DrawCardButton
           title="Draw a Card"
           deckId={deckId}
           onPress={() => onPress()}
+          disabled={drawButtonDisabledState}
+        />
+        <StartButton
+          title={'Start'}
+          shouldShow={startButtonShowState}
+          onPress={() => onStartPress()}
         />
       </View>
     </View>

@@ -16,6 +16,7 @@ const Card = ({card}) => {
 
 const styles = StyleSheet.create({
   imgView: {
+    marginTop: 150,
     resizeMode: 'contain',
     width: 150,
     height: 150,
