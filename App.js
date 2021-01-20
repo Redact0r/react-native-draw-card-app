@@ -8,7 +8,7 @@ import StartButton from './components/StartButton';
 const App = () => {
   const [deckId, setDeckId] = useState('nr2zoehl1tii');
   const [cardImage, setCardImage] = useState('');
-  const [cardsRemaining, setCardsRemaining] = useState(0);
+  const [cardsRemaining, setCardsRemaining] = useState(52);
   const [startButtonShowState, setStartButtonShowState] = useState(true);
   const [drawButtonDisabledState, setDrawButtonDisabledState] = useState(true);
 
@@ -34,6 +34,7 @@ const App = () => {
         .then((data) => (data.success ? data : new Error(data.error)))
         .catch((error) => console.log(error.message));
 
+      alert('Deck Shuffled');
       setCardsRemaining(shuffleDeck.remaining);
     }
 
@@ -50,7 +51,7 @@ const App = () => {
       <Header />
       <View style={styles.cardContainer}>
         <Card card={cardImage} />
-        <Text>{cardsRemaining}</Text>
+        <Text style={styles.cardsRemainingText}>{cardsRemaining}</Text>
       </View>
       <View style={styles.drawCardButtonContainer}>
         <DrawCardButton
@@ -70,6 +71,10 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
+  cardsRemainingText: {
+    color: '#fff',
+  },
+
   container: {
     flex: 1,
     backgroundColor: '#0a6c03',
