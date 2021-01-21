@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Modal, Button} from 'react-native';
 import Header from './components/Header';
 import Card from './components/Card';
 import DrawCardButton from './components/DrawCardButton';
 import StartButton from './components/StartButton';
+import ShuffleModal from './components/ShuffleModal';
 
 const App = () => {
   const [deckId, setDeckId] = useState('nr2zoehl1tii');
@@ -11,6 +12,11 @@ const App = () => {
   const [cardsRemaining, setCardsRemaining] = useState(52);
   const [startButtonShowState, setStartButtonShowState] = useState(true);
   const [drawButtonDisabledState, setDrawButtonDisabledState] = useState(true);
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalIsVisible(false);
+  };
 
   const onStartPress = async () => {
     const getNewDeckString = `https://deckofcardsapi.com/api/deck/new/shuffle/`;
@@ -40,7 +46,7 @@ const App = () => {
           throw error;
         });
 
-      alert('Deck Shuffled');
+      setModalIsVisible(true);
       setCardsRemaining(shuffleDeck.remaining);
     }
 
@@ -75,6 +81,7 @@ const App = () => {
           shouldShow={startButtonShowState}
           onPress={() => onStartPress()}
         />
+        <ShuffleModal visible={modalIsVisible} onPress={() => toggleModal()} />
       </View>
     </View>
   );
